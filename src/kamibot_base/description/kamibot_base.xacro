@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- 圆柱形底盘 -->
+    <xacro:macro name="base_macro" params="name m r h color">
+        <link name="${name}">
+            <visual>
+                <origin xyz=" 0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder length="${h}" radius="${r}"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz=" 0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder length="${h}" radius="${r}"/>
+                </geometry>
+            </collision>
+            <xacro:include filename="kamibot_utils.xacro" />
+            <xacro:cylinder_inertial_matrix m="${m}" r="${r}" h="${h}" />
+        </link>
+        
+        <gazebo reference="${name}">
+            <material>${color}</material>
+        </gazebo>
+    </xacro:macro>
+</robot>

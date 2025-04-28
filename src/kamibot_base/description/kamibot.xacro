@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kamibot">
+
+    <xacro:include filename="kamibot_materials.xacro" />
+
+    <xacro:property name="base_mass" value="1" />
+    <xacro:property name="base_radius" value="0.20" />  <!-- 底盘半径 -->
+    <xacro:property name="base_height" value="0.16" />  <!-- 底盘高度 -->
+
+    <xacro:property name="wheel_mass" value="0.2" />
+    <xacro:property name="wheel_radius" value="0.06" />  <!-- 轮子半径 -->
+    <xacro:property name="wheel_length" value="0.025" /> <!-- 轮子厚度 -->
+    <xacro:property name="wheel_joint_y" value="0.19" />
+    <xacro:property name="wheel_joint_z" value="-0.05" />
+
+    <xacro:property name="caster_radius" value="0.015" />
+    <xacro:property name="caster_joint_x" value="0.17" />
+    <xacro:property name="caster_joint_z" value="-0.095" />
+
+    <xacro:property name="lidar_mass" value="0.1" />
+    <xacro:property name="lidar_radius" value="0.05" />
+    <xacro:property name="lidar_height" value="0.04" />
+    <xacro:property name="lidar_joint_x" value="0.15" />
+    <xacro:property name="lidar_joint_z" value="0.10" />
+
+    <xacro:property name="camera_joint_x" value="0.20" />
+
+    <!-- 生成底座 -->
+    <xacro:include filename="kamibot_base.xacro" />
+    <xacro:base_macro
+        name="base_link"
+        m="${base_mass}"
+        r="${base_radius}"
+        h="${base_height}"
+        color="Gazebo/Turquoise"
+    />
+
+    <!-- 生成左右轮 -->
+    <xacro:include filename="kamibot_wheel.xacro" />
+    <xacro:drive_wheel_macro
+        name="left_wheel"
+        m="${wheel_mass}"
+        r="${wheel_radius}"
+        h="${wheel_length}"
+        color="Gazebo/TurquoiseGlow"
+    />
+ 
+    <xacro:drive_wheel_macro
+        name="right_wheel"
+        m="${wheel_mass}"
+        r="${wheel_radius}"
+        h="${wheel_length}"
+        color="Gazebo/TurquoiseGlow"
+    />
+
+    <!-- 生成前后万向轮 -->
+    <xacro:caster_macro
+        name="front_caster"
+        r="${caster_radius}"
+        color="Gazebo/RedGlow"
+    />
+    <xacro:caster_macro
+        name="back_caster"
+        r="${caster_radius}"
+        color="Gazebo/TurquoiseGlow"
+    />
+
+    <!-- 生成雷达 -->
+    <xacro:include filename="sensors/lidar_gazebo.xacro" />
+    <xacro:lidar
+        name="kamibot_lidar"
+        m="${lidar_mass}"
+        r="${lidar_radius}"
+        h="${lidar_height}"
+        color="Gazebo/DarkGrey"
+    />
+
+    <!-- 生成相机 -->
+    <xacro:include filename="sensors/camera_gazebo.xacro" />
+    <xacro:usb_camera name="kamibot_camera" />
+
+    <!-- 关节定义，连接以上组件 -->
+    <!-- 左轮关节 -->
+    <joint name="left_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="left_wheel" />
+        <origin xyz="0 ${wheel_joint_y} ${wheel_joint_z}" />
+        <axis xyz="0 1 0" />
+    </joint>
+    <xacro:transmission_macro joint="left_wheel_joint" />
+
+    <!-- 右轮关节 -->
+    <joint name="right_wheel_joint" type="continuous">
+        <parent link="base_link" />
+        <child link="right_wheel" />
+        <origin xyz="0 ${-wheel_joint_y} ${wheel_joint_z}" />
+        <axis xyz="0 1 0" />
+    </joint>
+    <xacro:transmission_macro joint="right_wheel_joint" />
+
+    <!-- 前万向轮关节（自由旋转） -->
+    <joint name="front_caster_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="front_caster" />
+        <origin xyz="${caster_joint_x} 0 ${caster_joint_z}" />
+    </joint>
+
+    <!-- 后万向轮关节（自由旋转） -->
+    <joint name="back_caster_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="back_caster" />
+        <origin xyz="${-caster_joint_x} 0 ${caster_joint_z}" />
+    </joint>
+
+    <!-- 雷达关节 -->
+    <joint name="lidar_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="kamibot_lidar" />
+        <origin xyz="${lidar_joint_x} 0 ${lidar_joint_z}" />
+    </joint>
+
+    <!-- 相机关节 -->
+    <joint name="camera_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="kamibot_camera" />
+        <origin xyz="${camera_joint_x} 0 0" />
+    </joint>
+
+    <!-- 差速驱动控制器插件 -->
+    <gazebo>
+        <plugin name="differential_drive_controller" 
+                filename="libgazebo_ros_diff_drive.so">                
+            <update_rate>30</update_rate>
+            <left_joint>left_wheel_joint</left_joint>
+            <right_joint>right_wheel_joint</right_joint>
+            <wheel_separation>${wheel_joint_y*2}</wheel_separation>
+            <wheel_diameter>${2*wheel_radius}</wheel_diameter>
+            <max_wheel_torque>20</max_wheel_torque>
+            <max_wheel_acceleration>1.0</max_wheel_acceleration>
+            <command_topic>cmd_vel</command_topic>
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+            <publish_wheel_tf>true</publish_wheel_tf>
+            <odometry_topic>odom</odometry_topic> <!-- 里程计话题名称 -->
+            <odometry_frame>odom</odometry_frame> <!-- 里程计坐标系名称 -->
+            <robot_base_frame>base_footprint</robot_base_frame> <!-- base坐标系名称 -->
+            <odometry_source>1</odometry_source> <!-- 1 使用轮子编码器的模拟数据 -->
+        </plugin>
+    </gazebo>
+</robot>

@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- 驱动轮宏 -->
+    <xacro:macro name="drive_wheel_macro" params="name m r h color">
+        <link name="${name}">
+            <visual>
+                <geometry>
+                    <cylinder radius="${r}" length="${h}" />
+                </geometry>
+                <material name="yellow" />
+                <origin rpy="${pi/2} 0 0" xyz="0 0 0" /> <!--旋转90度-->
+            </visual>
+            <collision>
+                <geometry>
+                    <cylinder radius="${r}" length="${h}" />
+                </geometry>
+                <origin rpy="${pi/2} 0 0" xyz="0 0 0" />
+            </collision>
+
+            <xacro:include filename="kamibot_utils.xacro" />
+            <xacro:cylinder_inertial_matrix m="${m}" r="${r}" h="${h}" />
+        </link>
+
+        <gazebo reference="${name}">
+            <material>${color}</material>
+            <mu1>100000.0</mu1>
+            <mu2>100000.0</mu2>
+        </gazebo>
+    </xacro:macro>
+
+    <!-- 添加传动系统 -->
+    <xacro:macro name="transmission_macro" params="joint">
+        <transmission name="${joint}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint}" >
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint}_motor">
+                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <!-- 万向轮宏 -->
+    <xacro:macro name="caster_macro" params="name r color">
+        <link name="${name}">
+            <xacro:include filename="kamibot_utils.xacro" />
+            <visual>
+                <geometry>
+                    <sphere radius="${r}" />
+                </geometry>
+                <material name="yellow" />
+            </visual>
+            <collision>
+                <geometry>
+                    <sphere radius="${r}" />
+                </geometry>
+            </collision>
+        </link>
+
+        <gazebo reference="${name}">
+            <material>${color}</material>
+        </gazebo>
+    </xacro:macro>
+</robot>
