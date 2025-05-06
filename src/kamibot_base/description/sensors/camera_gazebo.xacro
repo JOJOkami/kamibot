@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="camera">
 
-    <xacro:macro name="usb_camera" params="name:=camera prefix:=kamibot">
+    <xacro:macro name="usb_camera" params="name:=camera prefix:=kamibot color">
         <link name="${name}">
             <inertial>
                 <mass value="0.1" />
@@ -27,7 +27,7 @@
             </collision>
         </link>
         <gazebo reference="${name}">
-            <material>Gazebo/FlatBlack</material>
+            <material>color</material>
         </gazebo>
 
         <gazebo reference="${name}">

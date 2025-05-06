@@ -1,29 +1,29 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kamibot">
 
-    <xacro:include filename="kamibot_materials.xacro" />
-
     <xacro:property name="base_mass" value="1" />
     <xacro:property name="base_radius" value="0.20" />  <!-- 底盘半径 -->
     <xacro:property name="base_height" value="0.16" />  <!-- 底盘高度 -->
 
     <xacro:property name="wheel_mass" value="0.2" />
-    <xacro:property name="wheel_radius" value="0.06" />  <!-- 轮子半径 -->
-    <xacro:property name="wheel_length" value="0.025" /> <!-- 轮子厚度 -->
-    <xacro:property name="wheel_joint_y" value="0.19" />
-    <xacro:property name="wheel_joint_z" value="-0.05" />
+    <xacro:property name="wheel_radius" value="0.04" />  <!-- 轮子半径 -->
+    <xacro:property name="wheel_length" value="0.02" /> <!-- 轮子厚度 -->
+    <xacro:property name="wheel_joint_y" value="${base_radius}" />
+    <xacro:property name="wheel_joint_z" value="${-base_height/2}" />
 
-    <xacro:property name="caster_radius" value="0.015" />
-    <xacro:property name="caster_joint_x" value="0.17" />
-    <xacro:property name="caster_joint_z" value="-0.095" />
+    <xacro:property name="base_groud_height" value="${wheel_radius}" />  <!-- 底盘离地高度 -->
+
+    <xacro:property name="caster_radius" value="${wheel_radius/2}" />
+    <xacro:property name="caster_joint_x" value="${base_radius-caster_radius}" />
+    <xacro:property name="caster_joint_z" value="${-(base_height/2+caster_radius)}" />
 
     <xacro:property name="lidar_mass" value="0.1" />
-    <xacro:property name="lidar_radius" value="0.05" />
-    <xacro:property name="lidar_height" value="0.04" />
-    <xacro:property name="lidar_joint_x" value="0.15" />
-    <xacro:property name="lidar_joint_z" value="0.10" />
+    <xacro:property name="lidar_radius" value="${base_radius/4}" />
+    <xacro:property name="lidar_height" value="${base_height/4}" />
+    <xacro:property name="lidar_joint_x" value="${base_radius-lidar_radius}" />
+    <xacro:property name="lidar_joint_z" value="${base_height/2+lidar_height/2}" />
 
-    <xacro:property name="camera_joint_x" value="0.20" />
+    <xacro:property name="camera_joint_x" value="${base_radius}" />
 
     <!-- 生成底座 -->
     <xacro:include filename="kamibot_base.xacro" />
@@ -32,6 +32,7 @@
         m="${base_mass}"
         r="${base_radius}"
         h="${base_height}"
+        g="${base_groud_height}"
         color="Gazebo/Turquoise"
     />
 
@@ -57,7 +58,7 @@
     <xacro:caster_macro
         name="front_caster"
         r="${caster_radius}"
-        color="Gazebo/RedGlow"
+        color="Gazebo/TurquoiseGlow"
     />
     <xacro:caster_macro
         name="back_caster"
@@ -72,14 +73,16 @@
         m="${lidar_mass}"
         r="${lidar_radius}"
         h="${lidar_height}"
-        color="Gazebo/DarkGrey"
+        color="Gazebo/RedGlow"
     />
 
     <!-- 生成相机 -->
     <xacro:include filename="sensors/camera_gazebo.xacro" />
-    <xacro:usb_camera name="kamibot_camera" />
+    <xacro:usb_camera
+        name="kamibot_camera"
+        color="Gazebo/RedGlow"
+    />
 
-    <!-- 关节定义，连接以上组件 -->
     <!-- 左轮关节 -->
     <joint name="left_wheel_joint" type="continuous">
         <parent link="base_link" />

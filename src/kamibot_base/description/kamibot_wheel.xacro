@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <xacro:include filename="kamibot_utils.xacro" />
+    
     <!-- 驱动轮宏 -->
     <xacro:macro name="drive_wheel_macro" params="name m r h color">
         <link name="${name}">
@@ -8,7 +10,9 @@
                 <geometry>
                     <cylinder radius="${r}" length="${h}" />
                 </geometry>
-                <material name="yellow" />
+                <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
                 <origin rpy="${pi/2} 0 0" xyz="0 0 0" /> <!--旋转90度-->
             </visual>
             <collision>
@@ -18,7 +22,6 @@
                 <origin rpy="${pi/2} 0 0" xyz="0 0 0" />
             </collision>
 
-            <xacro:include filename="kamibot_utils.xacro" />
             <xacro:cylinder_inertial_matrix m="${m}" r="${r}" h="${h}" />
         </link>
 
@@ -46,14 +49,17 @@
     <!-- 万向轮宏 -->
     <xacro:macro name="caster_macro" params="name r color">
         <link name="${name}">
-            <xacro:include filename="kamibot_utils.xacro" />
             <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
                     <sphere radius="${r}" />
                 </geometry>
-                <material name="yellow" />
+                <material name="black">
+                    <color rgba="0 0 0 1"/>
+                </material>
             </visual>
             <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
                     <sphere radius="${r}" />
                 </geometry>

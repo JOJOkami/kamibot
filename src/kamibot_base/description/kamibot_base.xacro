@@ -1,14 +1,37 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+    <xacro:include filename="kamibot_utils.xacro" />
+
     <!-- 圆柱形底盘 -->
-    <xacro:macro name="base_macro" params="name m r h color">
+    <xacro:macro name="base_macro" params="name m r h g color">
+        <link name="base_footprint">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <box size="0.001 0.001 0.001" />
+                </geometry>
+            </visual>
+        </link>
+        <gazebo reference="base_footprint">
+            <turnGravityOff>false</turnGravityOff>
+        </gazebo>
+
+        <joint name="base_footprint_joint" type="fixed">
+            <origin xyz="0 0 ${h/2+g}" rpy="0 0 0" />
+            <parent link="base_footprint"/>
+            <child link="${name}" />
+        </joint>
+
         <link name="${name}">
             <visual>
                 <origin xyz=" 0 0 0" rpy="0 0 0" />
                 <geometry>
                     <cylinder length="${h}" radius="${r}"/>
                 </geometry>
+                <material name="green">
+                    <color rgba="0 0.5 0 1"/>
+                </material>
             </visual>
             <collision>
                 <origin xyz=" 0 0 0" rpy="0 0 0" />
@@ -16,7 +39,6 @@
                     <cylinder length="${h}" radius="${r}"/>
                 </geometry>
             </collision>
-            <xacro:include filename="kamibot_utils.xacro" />
             <xacro:cylinder_inertial_matrix m="${m}" r="${r}" h="${h}" />
         </link>
         
