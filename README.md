@@ -21,17 +21,17 @@
 ### 2.1 安装
 
 1、安装slam-toolbox用于建图
-```
+```shell
 sudo apt install ros-$ROS_DISTRO-slam-toolbox
 ```
 
 2、安装Navgation2用于自动巡航
-```
+```shell
 sudo apt install ros-$ROS_DISTRO-nav2-bringup
 ```
 
 3、安装Gazebo仿真相关功能包
-```
+```shell
 sudo apt install ros-$ROS_DISTRO-robot-state-publisher  ros-$ROS_DISTRO-joint-state-publisher ros-$ROS_DISTRO-gazebo-ros-pkgs ros-$ROS_DISTRO-ros2-controllers ros-$ROS_DISTRO-xacro
 ```
 
@@ -39,8 +39,26 @@ sudo apt install ros-$ROS_DISTRO-robot-state-publisher  ros-$ROS_DISTRO-joint-st
 
 安装完成依赖后，可以使用 colcon 工具进行构建和运行。
 
-构建功能包
+1、构建功能包
 
-```
+```shell
 colcon build
+```
+
+2、运行仿真机器人
+```shell
+source install/setup.bash
+ros2 launch kamibot_base load_robot_into_gazebo.launch.py
+```
+
+3、运行navgation2
+```shell
+source install/setup.bash
+ros2 launch kamibot_navigation2  navigation2.launch.py
+```
+
+4、运行巡航程序
+```shell
+source install/setup.bash
+ros2 launch kamibot_autopatrol autopatrol.launch.py
 ```

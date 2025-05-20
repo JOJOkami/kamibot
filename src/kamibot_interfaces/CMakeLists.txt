@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(kamibot_base)
+project(kamibot_interfaces)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -10,10 +10,11 @@ find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
-INSTALL(DIRECTORY
-  launch world description map
-  DESTINATION share/${PROJECT_NAME}/)
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/CurrentPoint.srv"
+ )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
