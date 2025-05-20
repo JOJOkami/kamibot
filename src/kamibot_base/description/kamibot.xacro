@@ -13,6 +13,7 @@
 
     <xacro:property name="base_groud_height" value="${wheel_radius}" />  <!-- 底盘离地高度 -->
 
+    <xacro:property name="caster_mass" value="0.1" />
     <xacro:property name="caster_radius" value="${wheel_radius/2}" />
     <xacro:property name="caster_joint_x" value="${base_radius-caster_radius}" />
     <xacro:property name="caster_joint_z" value="${-(base_height/2+caster_radius)}" />
@@ -57,11 +58,13 @@
     <!-- 生成前后万向轮 -->
     <xacro:caster_macro
         name="front_caster"
+        m="${caster_mass}"
         r="${caster_radius}"
         color="Gazebo/TurquoiseGlow"
     />
     <xacro:caster_macro
         name="back_caster"
+        m="${caster_mass}"
         r="${caster_radius}"
         color="Gazebo/TurquoiseGlow"
     />

@@ -47,7 +47,7 @@
     </xacro:macro>
 
     <!-- 万向轮宏 -->
-    <xacro:macro name="caster_macro" params="name r color">
+    <xacro:macro name="caster_macro" params="name m r color">
         <link name="${name}">
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -64,6 +64,7 @@
                     <sphere radius="${r}" />
                 </geometry>
             </collision>
+            <xacro:sphere_inertial_matrix  m="${m}" r="${r}" />
         </link>
 
         <gazebo reference="${name}">
