@@ -7,7 +7,6 @@
 
 功能包功能如下：
 - kamibot_base 机器人仿真相关文件，用于加载仿真机器人
-- kamibot_interface 机器人相关接口定义
 - kamibot_application 机器人导航代码
 - kamibot_navigation2 机器人nav2启动文件和相关配置
 - kamibot_autopatrol 机器人巡航实现功能包

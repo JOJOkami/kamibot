@@ -4,11 +4,11 @@ from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from tf2_ros import TransformListener, Buffer
 from tf_transformations import euler_from_quaternion, quaternion_from_euler
 from rclpy.duration import Duration
-# 添加服务接口
-from kamibot_interfaces.srv import CurrentPoint
+
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
+
 
 class PatrolNode(BasicNavigator):
     def __init__(self, node_name='patrol_node'):
@@ -18,10 +18,10 @@ class PatrolNode(BasicNavigator):
         self.declare_parameter('target_points', [0.0, 0.0, 0.0, 1.0, 1.0, 0.0])
         self.initial_point_ = self.get_parameter('initial_point').value
         self.target_points_ = self.get_parameter('target_points').value
-        # 实时位置获取 TF 相关定义
+        
+        # 订阅TF话题
         self.buffer_ = Buffer()
         self.listener_ = TransformListener(self.buffer_, self)
-        self.current_point_ = self.create_client(CurrentPoint, 'current_point')
 
         # 订阅与保存图像相关定义
         self.declare_parameter('image_save_path', '')
@@ -29,7 +29,7 @@ class PatrolNode(BasicNavigator):
         self.bridge = CvBridge()
         self.latest_image = None
         self.subscription_image = self.create_subscription(
-            Image, '/camera_sensor/image_raw', self.image_callback, 10)
+            Image, '/kamibot/image_raw', self.image_callback, 10)
 
     def image_callback(self, msg):
         """
@@ -45,13 +45,6 @@ class PatrolNode(BasicNavigator):
           pose = self.get_current_pose()
           cv_image = self.bridge.imgmsg_to_cv2(self.latest_image)
           cv2.imwrite(f'{self.image_save_path}image_{pose.translation.x:3.2f}_{pose.translation.y:3.2f}.png', cv_image)
-
-
-    def speach_text(self, text):
-        """
-        调用服务播放语音
-        """
-        self.get_logger().info(f'语音合成成功：{text}')
 
     def get_pose_by_xyyaw(self, x, y, yaw):
         """
@@ -139,20 +132,21 @@ class PatrolNode(BasicNavigator):
 def main():
     rclpy.init()
     patrol = PatrolNode()
-    patrol.speach_text(text='正在初始化位置')
+    patrol.get_logger().info('正在初始化位置...')
     patrol.init_robot_pose()
-    patrol.speach_text(text='位置初始化完成')
+    patrol.get_logger().info('初始化位置完成')
 
     while rclpy.ok():
         for point in patrol.get_target_points():
             x, y, yaw = point[0], point[1], point[2]
-            # 导航到目标点
             target_pose = patrol.get_pose_by_xyyaw(x, y, yaw)
-            patrol.speach_text(text=f'准备前往目标点{x},{y}')
+
+            patrol.get_logger().info(f'准备前往目标点{x},{y}')
             patrol.nav_to_pose(target_pose)
-            patrol.speach_text(text=f"已到达目标点{x},{y},准备记录图像")
+
+            patrol.get_logger().info(f"已到达目标点{x},{y},准备记录图像")
             patrol.record_image()
-            patrol.speach_text(text=f"图像记录完成")
+            patrol.get_logger().info(f'图像记录完成')
     rclpy.shutdown()
 
 if __name__ == '__main__':

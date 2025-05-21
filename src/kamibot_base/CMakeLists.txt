@@ -12,7 +12,7 @@ find_package(ament_cmake REQUIRED)
 # find_package(<dependency> REQUIRED)
 
 INSTALL(DIRECTORY
-  launch world description map
+  launch world description
   DESTINATION share/${PROJECT_NAME}/)
 
 if(BUILD_TESTING)

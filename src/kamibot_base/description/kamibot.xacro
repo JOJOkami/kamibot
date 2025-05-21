@@ -21,7 +21,6 @@
     <xacro:property name="lidar_mass" value="0.1" />
     <xacro:property name="lidar_radius" value="${base_radius/4}" />
     <xacro:property name="lidar_height" value="${base_height/4}" />
-    <xacro:property name="lidar_joint_x" value="${base_radius-lidar_radius}" />
     <xacro:property name="lidar_joint_z" value="${base_height/2+lidar_height/2}" />
 
     <xacro:property name="camera_joint_x" value="${base_radius}" />
@@ -122,7 +121,7 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="base_link" />
         <child link="kamibot_lidar" />
-        <origin xyz="${lidar_joint_x} 0 ${lidar_joint_z}" />
+        <origin xyz="0 0 ${lidar_joint_z}" />
     </joint>
 
     <!-- 相机关节 -->
