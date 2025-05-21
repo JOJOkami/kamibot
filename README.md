@@ -7,9 +7,10 @@
 
 功能包功能如下：
 - kamibot_base 机器人仿真相关文件，用于加载仿真机器人
-- kamibot_application 机器人导航代码
 - kamibot_navigation2 机器人nav2启动文件和相关配置
 - kamibot_autopatrol 机器人巡航实现功能包
+  - camera_node 记录打卡点
+  - patrol_node 根据配置的点坐标进行自动巡航
 
 ## 2.使用方法
 
@@ -61,3 +62,23 @@ ros2 launch kamibot_navigation2  navigation2.launch.py
 source install/setup.bash
 ros2 launch kamibot_autopatrol autopatrol.launch.py
 ```
+
+## 3.目录结构
+├── kamibot_autopatrol
+│   ├── config              # 自动巡航功能相关配置
+│   ├── launch              # 启动巡航的launch文件
+│   ├── kamibot_autopatrol  # 自动巡航功能实现代码
+|        ├── camera_node.py # 实现视觉匹配打卡点并拍照
+|        ├── patrol_node.py # 实现指定坐标点的巡航
+│   ...
+├── kamibot_base
+│   ├── description         # 机器人仿真模型实现代码
+|        ├── sensors        # 传感器仿真模型代码
+│   ├── launch              # gazebo加载仿真机器人launch文件
+│   ├── world               # gazebo加载的环境文件
+|   ...
+└── kamibot_navigation2
+│   ├── config              # Nav2配置文件
+│   ├── launch              # Nav2启动launch文件
+│   ├── map                 # SLAM生成的map文件用于Nav2导航
+│   ...
