@@ -69,15 +69,15 @@ ros2 launch kamibot_autopatrol autopatrol.launch.py
 │   ├── config              # 自动巡航功能相关配置
 │   ├── launch              # 启动巡航的launch文件
 │   ├── kamibot_autopatrol  # 自动巡航功能实现代码
-|        ├── camera_node.py # 实现视觉匹配打卡点并拍照
-|        ├── patrol_node.py # 实现指定坐标点的巡航
+│        ├── camera_node.py # 实现视觉匹配打卡点并拍照
+│        ├── patrol_node.py # 实现指定坐标点的巡航
 │   ...
 ├── kamibot_base
 │   ├── description         # 机器人仿真模型实现代码
-|        ├── sensors        # 传感器仿真模型代码
+│        ├── sensors        # 传感器仿真模型代码
 │   ├── launch              # gazebo加载仿真机器人launch文件
 │   ├── world               # gazebo加载的环境文件
-|   ...
+│   ...
 └── kamibot_navigation2
 │   ├── config              # Nav2配置文件
 │   ├── launch              # Nav2启动launch文件
