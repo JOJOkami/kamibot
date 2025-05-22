@@ -64,6 +64,7 @@ ros2 launch kamibot_autopatrol autopatrol.launch.py
 ```
 
 ## 3.目录结构
+```shell
 ├── kamibot_autopatrol
 │   ├── config              # 自动巡航功能相关配置
 │   ├── launch              # 启动巡航的launch文件
@@ -82,3 +83,4 @@ ros2 launch kamibot_autopatrol autopatrol.launch.py
 │   ├── launch              # Nav2启动launch文件
 │   ├── map                 # SLAM生成的map文件用于Nav2导航
 │   ...
+```
